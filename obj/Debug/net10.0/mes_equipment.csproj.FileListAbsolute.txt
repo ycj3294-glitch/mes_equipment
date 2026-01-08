@@ -1,0 +1,15 @@
+E:\dev\mes_total\mes_equipment\bin\Debug\net10.0\mes_equipment.exe
+E:\dev\mes_total\mes_equipment\bin\Debug\net10.0\mes_equipment.deps.json
+E:\dev\mes_total\mes_equipment\bin\Debug\net10.0\mes_equipment.runtimeconfig.json
+E:\dev\mes_total\mes_equipment\bin\Debug\net10.0\mes_equipment.dll
+E:\dev\mes_total\mes_equipment\bin\Debug\net10.0\mes_equipment.pdb
+E:\dev\mes_total\mes_equipment\obj\Debug\net10.0\mes_equipment.GeneratedMSBuildEditorConfig.editorconfig
+E:\dev\mes_total\mes_equipment\obj\Debug\net10.0\mes_equipment.AssemblyInfoInputs.cache
+E:\dev\mes_total\mes_equipment\obj\Debug\net10.0\mes_equipment.AssemblyInfo.cs
+E:\dev\mes_total\mes_equipment\obj\Debug\net10.0\mes_equipment.csproj.CoreCompileInputs.cache
+E:\dev\mes_total\mes_equipment\obj\Debug\net10.0\mes_equipment.sourcelink.json
+E:\dev\mes_total\mes_equipment\obj\Debug\net10.0\mes_equipment.dll
+E:\dev\mes_total\mes_equipment\obj\Debug\net10.0\refint\mes_equipment.dll
+E:\dev\mes_total\mes_equipment\obj\Debug\net10.0\mes_equipment.pdb
+E:\dev\mes_total\mes_equipment\obj\Debug\net10.0\mes_equipment.genruntimeconfig.cache
+E:\dev\mes_total\mes_equipment\obj\Debug\net10.0\ref\mes_equipment.dll
