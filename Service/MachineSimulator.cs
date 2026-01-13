@@ -35,41 +35,58 @@ public class MachineSimulator
 
   }
 
-  private async Task ProcessWorkOrder (WorkOrderDto order)
-  {
-    // 방어 코드: 완료된 작업이면 생산 금지
-    if (order.Status == "COMPLETED")
+  private async Task ProcessWorkOrder(WorkOrderDto order)
     {
-      Console.WriteLine("[SKIP] 이미 완료된 작업입니다.");
-      return;
-    }
-
-    // 생산 시뮬레이션
-    Console.ForegroundColor = ConsoleColor.Cyan; // 생산 들어갈시 터미널 문구 색상 변경
-    Console.WriteLine($"[Active] 작업 수주: {order.ProductCode} (목표: {order.TargetQty})");
-    Console.ResetColor();
-
-    await Task.Delay(2000); // 2초 마다 생산 
-
-    bool isSuccess = _random.NextDouble() > 0.05; // 95% 확률로 양품
-
-    var report = new ProductionReportDto
-    {
-      OrderId = order.Id,
-      MachineId = AppConfig.MachineId,
-      Result = isSuccess ? "OK" : "NG",
-      DefectCode = isSuccess ? null : "ERR-102" // 불량인 경우 불량 코드 추가 
-    };
-
-    bool reportResult = await _apiService.ReportProductionAsync(report);
-    if(reportResult)
-    {
-      Console.ForegroundColor = isSuccess ? ConsoleColor.Green : ConsoleColor.Red;
-        Console.WriteLine($"[Report] {order.ProductCode} 생산 결과: {report.Result}");
-        Console.ResetColor();
-      } else
+      // 방어 코드: 완료된 작업이면 생산 금지
+      if (order.Status == "COMPLETED")
       {
-        Console.WriteLine("[Warn] 보고 실패. 다음 폴링에서 재시도합니다.");
+        Console.WriteLine("[Skip] 이미 완료된 작업입니다.");
+        return;
+      }
+
+      Console.ForegroundColor = ConsoleColor.Cyan;
+      Console.WriteLine($"[Active] 작업 수주: {order.ProductCode} (목표: {order.TargetQty})");
+      Console.ResetColor();
+
+      // 생산 공정 시물레이션 (2초)
+      await Task.Delay(2000);
+
+      // 95% 확률로 양품(OK), 5% 확률로 불량(NG)
+      bool isSuccess = _random.NextDouble() > 0.05;
+
+      var report = new ProductionReportDto
+      {
+        OrderId = order.Id,
+        MachineId = AppConfig.MachineId,
+        Result = isSuccess ? "OK" : "NG",
+        DefectCode = isSuccess ? null : "ERR-102" // 예: 치수 불량
+      };
+
+      string reportStatus = await _apiService.ReportProductionAsync(report);
+
+      if (reportStatus == "OK")
+      {
+          Console.ForegroundColor = isSuccess ? ConsoleColor.Green : ConsoleColor.Red;
+          Console.WriteLine($"[Report] {order.ProductCode} 생산 완료: {report.Result}");
+          Console.ResetColor();
+      }
+      else if (reportStatus == "SHORTAGE")
+      {
+          // ★ 자재 부족 시 비상 정지 로직
+          Console.WriteLine();
+          Console.BackgroundColor = ConsoleColor.Red;
+          Console.ForegroundColor = ConsoleColor.White;
+          Console.WriteLine(" [ALARM] 자재 재고가 부족합니다! 생산을 중단합니다. ");
+          Console.WriteLine(" [Action] 자재 보충 후 시뮬레이터를 다시 실행하세요. ");
+          Console.ResetColor();
+
+          // 프로그램을 종료하거나 무한 대기 상태로 빠지게 하여 설비 가동을 멈춤
+          Environment.Exit(0); 
+      }
+      else
+      {
+          // 서버 에러나 네트워크 오류 시
+          Console.WriteLine($"[Warn] 보고 실패: {reportStatus}. 잠시 후 재시도합니다.");
+      }
     }
   }
-}
